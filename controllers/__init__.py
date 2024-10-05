@@ -1,2 +1,2 @@
-from controllers.usuarios_controller import obtener_usuario
+from controllers.usuarios_controller import obtener_usuarios
 from controllers.usuarios_controller import crear_usuario
