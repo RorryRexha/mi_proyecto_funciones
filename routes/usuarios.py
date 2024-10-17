@@ -1,43 +1,41 @@
 from flask import Blueprint, request, jsonify
-from controllers.usuarios_controller import obtener_usuarios, obtener_usuario_por_id, crear_usuario, actualizar_usuario, borrar_usuario
-
-
-usuarios_routes = Blueprint('usuarios', __name__)
-
-# Definir las rutas (GET, POST, PUT, DELETE) aquí
+from controllers.usuarios_controller import obtener_usuario , agregar_usuario, actualizar_usuario, eliminar_usuario, usuario_por_id
+usuarios_routes = Blueprint('usuarios',__name__)
 @usuarios_routes.route('/api/usuarios', methods=['GET'])
 def get_usuarios():
-    usuarios = obtener_usuarios()
-    return jsonify([usuario.serialize() for usuario in usuarios])
-
-@usuarios_routes.route('/api/usuarios/<int:id>', methods=['GET'])
-def get_usuario(id):
-    usuario = obtener_usuario_por_id(id)
-    if usuario:
-        return jsonify(usuario.serialize())
-    return jsonify({'message': 'Usuario no encontrado'}), 404
-
+    usuarios = obtener_usuario()
+    
+    usuarios_serializados = [{
+        "id": u.id,
+        "nombre": u.nombre,
+        "email": u.email
+    } for u in usuarios]
+    
+    return jsonify(usuarios_serializados)
 @usuarios_routes.route('/api/usuarios', methods=['POST'])
-def post_usuario():
-    data = request.get_json()
-    if not data or not 'nombre' in data or not 'email' in data:
-        return jsonify({'message': 'Datos incompletos'}), 400
-    nuevo_usuario = crear_usuario(data)
-    return jsonify(nuevo_usuario.serialize()), 201
-
+def post_usuarios():
+    data = request.json
+    mensaje = agregar_usuario(data)
+    return jsonify ({"mensaje": mensaje})
 @usuarios_routes.route('/api/usuarios/<int:id>', methods=['PUT'])
-def put_usuario(id):
-    data = request.get_json()
-    if not data or not 'nombre' in data or not 'email' in data:
-        return jsonify({'message': 'Datos incompletos'}), 400
-    usuario_actualizado = actualizar_usuario(id, data)
-    if usuario_actualizado:
-        return jsonify(usuario_actualizado.serialize())
-    return jsonify({'message': 'Usuario no encontrado'}), 404
-
+def update_usuario(id):
+    data = request.json
+    mensaje = actualizar_usuario(id, data)
+    return jsonify({"mensaje": mensaje}), 201
 @usuarios_routes.route('/api/usuarios/<int:id>', methods=['DELETE'])
 def delete_usuario(id):
-    usuario_borrado = borrar_usuario(id)
-    if usuario_borrado:
-        return jsonify({'message': 'Usuario eliminado con éxito'})
-    return jsonify({'message': 'Usuario no encontrado'}), 404
+    mensaje = eliminar_usuario(id)
+    return jsonify({"mensaje": mensaje}), 201
+#Ruta para obtener un usuario por su ID
+@usuarios_routes.route('/api/usuarios/<int:id>', methods=['GET'])
+def get_usuario_por_id(id):
+    usuario = usuario_por_id(id)
+    if usuario:
+        usuario_serializado = {
+            "id": usuario.id,
+            "nombre": usuario.nombre,
+            "email": usuario.email
+        }
+        return jsonify(usuario_serializado)
+    else:
+        return jsonify({"mensaje": "Usuario no encontrado"}), 404

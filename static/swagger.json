@@ -1,0 +1,113 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "descrition": "Documentacion de API101",
+        "version": "1.0",
+        "title": "API101"
+    },
+    "host": "localhost:5000",
+    "basePath": "/",
+    "schema": [
+        "http"
+    ],
+    "paths": {
+        "/api/usuario": {
+            "get": {
+                "description": "Devuelve lista de usuarios",
+                "responses": {
+                    "200": {
+                        "description": "Devuelve lista de usuarios",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "properties": {
+                                    "id": { "type": "integer" },
+                                    "nombre": { "type": "string" },
+                                    "email": { "type": "string" }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Crea un nuevo usuario",
+                "parameters": [
+                    {
+                        "name": "usuario",
+                        "in": "body",
+                        "description": "Objeto JSON con los datos del usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "nombre": { "type": "string" },
+                                "email": { "type": "string" }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Usuario creado exitosamente"
+                    }
+                }
+            }
+        },
+        "/api/usuario/{id}": {
+            "put": {
+                "description": "Actualiza los datos de un usuario",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "description": "ID del usuario a actualizar"
+                    },
+                    {
+                        "name": "usuario",
+                        "in": "body",
+                        "description": "Objeto JSON con los datos actualizados",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "nombre": { "type": "string" },
+                                "email": { "type": "string" }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario actualizado exitosamente"
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Elimina un usuario por su ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "description": "ID del usuario a eliminar"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario eliminado exitosamente"
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                }
+            }
+        }
+    }
+}

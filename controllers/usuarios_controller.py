@@ -1,32 +1,26 @@
+from flask import request
+from models import db
 from models.usuarios import Usuario
-from db import db
-
-
-def obtener_usuarios():
+#commit  => guardado de informacion 
+def obtener_usuario():
     return Usuario.query.all()
-
-def obtener_usuario_por_id(usuario_id):
-    return Usuario.query.get(usuario_id)
-
-def crear_usuario(data):
-    nuevo_usuario = Usuario(nombre=data['nombre'], email=data['email'])
+def usuario_por_id(id):
+    return Usuario.query.get(id)  
+def agregar_usuario(data):
+    nuevo_usuario = Usuario(nombre= data['nombre'], email= data['email'])
     db.session.add(nuevo_usuario)
     db.session.commit()
-    return nuevo_usuario
-
-def actualizar_usuario(usuario_id, data):
-    usuario = Usuario.query.get(usuario_id)
-    if usuario:
+    return "Usuario agregado correctamente"
+def actualizar_usuario(id, data):
+    usuario = Usuario.query.get(id)
+    if 'nombre' in data:
         usuario.nombre = data['nombre']
+    if 'email' in data:
         usuario.email = data['email']
-        db.session.commit()
-        return usuario
-    return None
-
-def borrar_usuario(usuario_id):
-    usuario = Usuario.query.get(usuario_id)
-    if usuario:
-        db.session.delete(usuario)
-        db.session.commit()
-        return usuario
-    return None
+    db.session.commit()
+    return "Usuario actualizado correctamente"
+def eliminar_usuario(id):
+    usuario = Usuario.query.get(id)
+    db.session.delete(usuario)
+    db.session.commit()
+    return "Usuario eliminado correctamente"
